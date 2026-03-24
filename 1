@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>My Life App</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: -apple-system;
+  background: #f2f2f7;
+}
+
+/* 页面 */
+.page {
+  display: none;
+  padding: 20px;
+}
+
+.active {
+  display: block;
+}
+
+/* 卡片 */
+.card {
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(20px);
+  padding: 15px;
+  border-radius: 20px;
+  margin-bottom: 15px;
+}
+
+/* 输入 */
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 12px;
+  border: none;
+  margin-bottom: 10px;
+}
+
+/* 按钮 */
+button {
+  width: 100%;
+  padding: 12px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 12px;
+}
+
+/* 底部导航 */
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid #ddd;
+}
+
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- 记账页 -->
+<div id="home" class="page active">
+  <h2>记账</h2>
+  <div class="card">
+    <input id="amount" placeholder="金额">
+    <input id="category" placeholder="分类">
+    <button onclick="add()">添加</button>
+  </div>
+  <ul id="list"></ul>
+</div>
+
+<!-- 任务页 -->
+<div id="task" class="page">
+  <h2>任务</h2>
+  <div class="card">
+    <input id="taskInput" placeholder="写点什么">
+    <button onclick="addTask()">添加</button>
+  </div>
+  <ul id="taskList"></ul>
+</div>
+
+<!-- 底部导航 -->
+<div class="tabbar">
+  <div class="tab" onclick="switchTab('home')">记账</div>
+  <div class="tab" onclick="switchTab('task')">任务</div>
+</div>
+
+<script>
+let data = JSON.parse(localStorage.getItem("data")) || [];
+let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+
+function add() {
+  let amount = amount.value;
+  let category = category.value;
+
+  data.push({ amount, category });
+  localStorage.setItem("data", JSON.stringify(data));
+  render();
+}
+
+function render() {
+  list.innerHTML = "";
+  data.forEach(i => {
+    let li = document.createElement("li");
+    li.innerText = i.category + " ¥" + i.amount;
+    list.appendChild(li);
+  });
+}
+
+function addTask() {
+  let t = taskInput.value;
+  tasks.push(t);
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+  renderTask();
+}
+
+function renderTask() {
+  taskList.innerHTML = "";
+  tasks.forEach(t => {
+    let li = document.createElement("li");
+    li.innerText = t;
+    taskList.appendChild(li);
+  });
+}
+
+function switchTab(id) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+render();
+renderTask();
+</script>
+
+</body>
+</html>
